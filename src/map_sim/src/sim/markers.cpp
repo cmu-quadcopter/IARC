@@ -6,6 +6,7 @@
 
 geometry_msgs::Pose quad_pose;
 std::vector<geometry_msgs::Pose> bot_poses;
+std::vector<geometry_msgs::Pose> obs_poses;
 
 void quad_callback(const geometry_msgs::PoseStamped::ConstPtr& msg){
     quad_pose = msg->pose;
@@ -15,14 +16,21 @@ void bot_callback(const geometry_msgs::PoseArray::ConstPtr& msg){
     bot_poses = msg->poses;
 }
 
+void obs_callback(const geometry_msgs::PoseArray::ConstPtr& msg){
+    obs_poses = msg->poses;
+}
+
 int main(int argc, char** argv){
     ros::init(argc, argv, "main_sim");
     ros::NodeHandle nh;
     ros::Rate rate(30);
     ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>("quad_marker", 1);
     ros::Publisher bots_pub = nh.advertise<visualization_msgs::MarkerArray>("bot_markers", 1);
+    ros::Publisher obs_pub = nh.advertise<visualization_msgs::MarkerArray>("obs_markers", 1);
+
     ros::Subscriber quad_sub = nh.subscribe("quad_pose", 1, quad_callback);
     ros::Subscriber bots_sub = nh.subscribe("bot_poses", 10, bot_callback);
+    ros::Subscriber obs_sub = nh.subscribe("obstacle_poses", 4, obs_callback);
 
     ROS_INFO("Sim Ready");
     while(ros::ok()){
@@ -78,6 +86,36 @@ int main(int argc, char** argv){
         }
 
         bots_pub.publish(markers);
+
+        visualization_msgs::MarkerArray obs_markers;
+        for(int i = 0; i < obs_poses.size(); i++){
+            visualization_msgs::Marker m;
+            m.header.frame_id = "/map";
+            m.header.stamp = ros::Time::now();
+            m.ns = "obstacles";
+            m.id = i;
+
+            m.type = visualization_msgs::Marker::CYLINDER;
+            m.action = visualization_msgs::Marker::ADD;
+
+            double height = 2.5;
+            m.pose = obs_poses.at(i);
+            m.pose.position.z += height/2;
+            m.scale.x = 0.25;
+            m.scale.y = 0.25;
+            m.scale.z = height;
+
+            m.color.r = 1.0f;
+            m.color.g = 0.0f;
+            m.color.b = 0.0f;
+            m.color.a = 1.0;
+
+            m.lifetime = ros::Duration();
+
+            obs_markers.markers.push_back(m);
+        }
+
+        obs_pub.publish(obs_markers);
 
         rate.sleep();
 

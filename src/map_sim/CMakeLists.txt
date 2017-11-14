@@ -18,11 +18,6 @@ catkin_package(
 ## Build ##
 ###########
 
-## Source files
-file(GLOB sim_src
-    "src/sim/main.cpp"
-)
-
 ## System libary dependencies
 
 include_directories(
@@ -34,16 +29,16 @@ set(SYSTEM_LIBRARIES
 )
 
 ## Declare a C++ executable
-add_executable(sim ${sim_src})
+add_executable(markers "src/sim/markers.cpp")
 add_executable(quad "src/sim/quad.cpp")
 add_executable(bots "src/sim/bots.cpp")
 
 ## Add cmake target dependencies of the executable
-add_dependencies(sim ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(markers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(quad ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(bots ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(sim ${catkin_LIBRARIES} ${SYSTEM_LIBRARIES})
+target_link_libraries(markers ${catkin_LIBRARIES} ${SYSTEM_LIBRARIES})
 target_link_libraries(quad ${catkin_LIBRARIES} ${SYSTEM_LIBRARIES})
 target_link_libraries(bots ${catkin_LIBRARIES} ${SYSTEM_LIBRARIES})
