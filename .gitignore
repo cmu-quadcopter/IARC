@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Catkin environment
+build/
+devel/
+logs/
+.catkin_tools/
