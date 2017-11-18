@@ -1,0 +1,11 @@
+<launch>
+    <!-- vim: set ft=xml noet :-->
+    
+    <node name="markers" pkg="map_sim" type="markers"/>
+    <node name="quad" pkg="map_sim" type="quad"/>
+    <node name="bots" pkg="map_sim" type="bots" output="screen"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="map" 
+    args="0.0 0.0 0.0 0 0 0 1 world map 100" />
+    <node pkg="rviz" type="rviz" name="rviz" args="-f map -d $(find map_sim)/config/map_sim.rviz"/>
+</launch>
