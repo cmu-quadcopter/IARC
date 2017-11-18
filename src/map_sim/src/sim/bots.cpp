@@ -59,7 +59,7 @@ class Bot{
         }
 
         void check_collisions(ros::Time now, const std::vector<geometry_msgs::Pose> &poses){
-            state = 4;
+            //state = 4;
             //TODO implement collision detection
             return;
             last_collision = now;
